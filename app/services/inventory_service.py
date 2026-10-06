@@ -23,6 +23,7 @@ from . import alert_service
 from .errors import EstoqueInsuficienteError, RegraNegocioError
 
 MSG_ESTOQUE_INSUFICIENTE = "Estoque insuficiente. Não é possível realizar esta saída."
+TIPOS_SEM_VENCIDOS = ("venda", "consumo")
 CASAS = Decimal("0.001")
 
 
@@ -284,10 +285,18 @@ def registrar_saida(product_id, quantidade, tipo, usuario, lote_id=None, numeros
                 raise EstoqueInsuficienteError(MSG_ESTOQUE_INSUFICIENTE)
             alocacao = [(None, qtd)]
         elif produto.usa_lote:
+            # Produto vencido não pode ser vendido nem consumido; só sai como perda/devolução/ajuste.
+            bloquear_vencidos = tipo in TIPOS_SEM_VENCIDOS
+            dia = momento.date()
             if lote_id:
                 lote = db.session.get(Lote, int(lote_id)) if str(lote_id).isdigit() else None
                 if lote is None or lote.product_id != produto.id:
                     raise RegraNegocioError("Lote não encontrado para este produto.")
+                if bloquear_vencidos and lote.validade and lote.validade < dia:
+                    raise RegraNegocioError(
+                        f"O lote {lote.numero} está vencido ({lote.validade:%d/%m/%Y}) e não pode ser vendido "
+                        "ou consumido. Registre a saída como \"Perda / quebra / vencido\"."
+                    )
                 if Decimal(lote.quantidade) < qtd:
                     raise EstoqueInsuficienteError(
                         f"Estoque insuficiente no lote {lote.numero} (disponível: {_fmt(lote.quantidade)}). "
@@ -296,13 +305,22 @@ def registrar_saida(product_id, quantidade, tipo, usuario, lote_id=None, numeros
                 alocacao = [(lote, qtd)]
             else:
                 restante = qtd
+                vencido = Decimal(0)
                 for lote in lotes_disponiveis(produto):  # FEFO: vence primeiro, sai primeiro
+                    if bloquear_vencidos and lote.validade and lote.validade < dia:
+                        vencido += Decimal(lote.quantidade)
+                        continue
                     usar = min(restante, Decimal(lote.quantidade))
                     alocacao.append((lote, usar))
                     restante -= usar
                     if restante <= 0:
                         break
                 if restante > 0:
+                    if vencido > 0:
+                        raise EstoqueInsuficienteError(
+                            f"{MSG_ESTOQUE_INSUFICIENTE} Há {_fmt(vencido)} {produto.unidade} de \"{produto.nome}\" "
+                            "em lotes VENCIDOS, que não podem ser vendidos. Registre a perda desses lotes."
+                        )
                     raise EstoqueInsuficienteError(MSG_ESTOQUE_INSUFICIENTE)
         else:
             alocacao = [(None, qtd)]

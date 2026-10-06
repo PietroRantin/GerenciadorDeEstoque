@@ -182,3 +182,18 @@ def test_produto_inativo_nao_movimenta(admin, criar_produto, db):
     db.session.commit()
     with pytest.raises(RegraNegocioError, match="inativo"):
         inv.registrar_entrada(p.id, 1, "compra", admin)
+
+
+def test_lote_vencido_nao_e_vendido(admin, criar_produto):
+    p = criar_produto(controla_lote="on", controla_validade="on")
+    inv.registrar_entrada(p.id, 4, "compra", admin, lote="VELHO", validade=date.today() - timedelta(days=2))
+    inv.registrar_entrada(p.id, 3, "compra", admin, lote="NOVO", validade=date.today() + timedelta(days=60))
+    movs = inv.registrar_saida(p.id, 2, "venda", admin)  # FEFO pula o lote vencido
+    assert [m.lote.numero for m in movs] == ["NOVO"]
+    with pytest.raises(EstoqueInsuficienteError, match="VENCIDOS"):
+        inv.registrar_saida(p.id, 3, "venda", admin)
+    velho = Lote.query.filter_by(numero="VELHO").one()
+    with pytest.raises(RegraNegocioError, match="vencido"):
+        inv.registrar_saida(p.id, 1, "venda", admin, lote_id=velho.id)
+    inv.registrar_saida(p.id, 4, "perda", admin, lote_id=velho.id)  # descarte permitido
+    assert p.estoque_atual == 1
