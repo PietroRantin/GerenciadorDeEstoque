@@ -31,7 +31,7 @@ def main():
     html = contar("app/templates", (".html",))
     css_js = contar("app/static", (".css", ".js"))
     py_test = contar("tests", (".py",))
-    saida = rodar(["python", "-m", "pytest", "-q", "-p", "no:cacheprovider", "--cov=app", "--cov-report=term"])
+    saida = rodar(["python", "-m", "pytest", "-o", "addopts=", "-q", "-p", "no:cacheprovider", "--cov=app", "--cov-report=term"])
     resumo = re.search(r"(\d+) passed(?:, (\d+) failed)?", saida)
     aprovados = int(resumo.group(1)) if resumo else 0
     falhas = int(resumo.group(2) or 0) if resumo else 0
