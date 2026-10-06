@@ -69,3 +69,15 @@ a.kpi-link:hover .card { box-shadow: 0 4px 10px rgba(0,0,0,.12); }
 .qtd-grande { font-size: 1.4rem; font-weight: 700; }
 .info-produto { background: #f0fdfa; border: 1px solid #99f6e4; border-radius: .5rem; padding: .75rem; }
 @media print { .sidebar, .topbar, .no-print, .btn { display: none !important; } .conteudo { padding: 0; } }
+
+/* Venda no celular: cada item vira um bloco empilhado (sem rolagem lateral) */
+@media (max-width: 575.98px) {
+  #tabela-itens thead { display: none; }
+  #tabela-itens, #tabela-itens tbody { display: block; }
+  #tabela-itens tr.linha-item { display: grid; grid-template-columns: 1fr 1fr auto; gap: .5rem; padding: .75rem 0; border-bottom: 1px solid #e5e7eb; }
+  #tabela-itens tr.linha-item td { display: block; border: 0; padding: 0; }
+  #tabela-itens tr.linha-item td:first-child { grid-column: 1 / -1; }
+  #tabela-itens tr.linha-item td.item-subtotal { grid-column: 1 / 3; text-align: left; }
+  #tabela-itens tr.linha-item td:last-child { grid-column: 3; grid-row: 3; }
+  #tabela-itens .item-subtotal::before { content: "Subtotal: "; font-weight: 400; color: #6b7280; }
+}
