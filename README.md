@@ -113,7 +113,7 @@ run.py                   # ponto de entrada
 - [Matriz de rastreabilidade (requisito → implementação → teste)](docs/MATRIZ_RASTREABILIDADE.md)
 - [Arquitetura, banco de dados e diagramas](docs/ARQUITETURA.md)
 - [Roteiro de teste manual de aceitação](docs/ROTEIRO_TESTE_MANUAL.md)
-- [Evidências de testes](docs/TESTES.md) · [Métricas](docs/METRICAS.md)
+- [Evidências de testes](docs/TESTES.md) · [Métricas](docs/METRICAS.md) · [Validação por cenários](docs/VALIDACAO_CENARIOS.md)
 - [Relatório acadêmico: metodologia, resultados e considerações finais](docs/RELATORIO_ACADEMICO.md)
 - [Screenshots](docs/screenshots/)
 
