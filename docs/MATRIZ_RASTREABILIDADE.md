@@ -58,3 +58,17 @@ Legenda de testes: `tests/<arquivo>::<teste>`. "Aceitação" = passo do
    movimentações é desativado, não apagado.
 5. **Venda de lote vencido** não estava explícita nos requisitos, mas é proibida na prática (Código de Defesa
    do Consumidor). Implementado bloqueio.
+
+## Numeração usada no relatório final
+
+O relatório final mantém a numeração da proposta enviada (RF-001 a RF-006, RNF-001 a RNF-005) e acrescenta os
+requisitos que entraram com a evolução do escopo:
+
+| Requisito | Descrição | Onde está nesta matriz |
+|---|---|---|
+| **RF-007** | Alerta de lotes a vencer em período configurável (30 dias) | "Alerta de validade" (escopo detalhado) |
+| **RF-008** | Rastreamento por lote e número de série nas movimentações | "Lote e número de série" (escopo detalhado) |
+| **RF-009** | Classificação dos produtos pela Curva ABC | "Curva ABC" (escopo detalhado) |
+| **RNF-006** | Suportar crescimento de 50% em produtos e usuários | `tests/test_performance.py` (1.500 produtos, 100 mil movimentações); PostgreSQL via `DATABASE_URL` |
+
+Os quatro cenários de validação estão em [VALIDACAO_CENARIOS.md](VALIDACAO_CENARIOS.md).

@@ -1,6 +1,6 @@
 # Métricas do projeto
 
-Gerado automaticamente por `scripts/metricas.py` em 06/10/2026.
+Gerado automaticamente por `scripts/metricas.py` em 18/10/2026.
 
 | Métrica | Valor |
 |---|---|
@@ -14,5 +14,5 @@ Gerado automaticamente por `scripts/metricas.py` em 06/10/2026.
 | Testes aprovados | 94 |
 | Testes com falha | 0 |
 | Cobertura de código (`app/`) | 90% |
-| Commits | 14 |
-| Commits por tipo | chore: 1, docs: 2, feat: 8, fix: 1, test: 2 |
+| Commits | 15 |
+| Commits por tipo | chore: 1, docs: 3, feat: 8, fix: 1, test: 2 |
